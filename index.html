@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BubbleMesh Prop · Grupo Lazza</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="apple-touch-icon" href="./assets/logo-prop-dark.webp">
+<script src="./config.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0A1424; }
+  body { -webkit-font-smoothing: antialiased; }
+  ::selection { background: rgba(37,99,235,0.4); color: #fff; }
+  @keyframes orbFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  @keyframes dotDrift { 0%,100% { transform: translate(0,0); opacity:0.5; } 50% { transform: translate(12px,-18px); opacity:0.9; } }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(24px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes pulseGlow { 0%,100% { opacity:0.55; } 50% { opacity:0.85; } }
+  @keyframes blink { 0%,100% { opacity:0.2; } 50% { opacity:1; } }
+  @keyframes picame { 0% { opacity:0; transform:translate(-50%,0) scale(0.7); } 18% { opacity:1; } 100% { opacity:0; transform:translate(-50%,-120px) scale(1.05); } }
+  .pica-chip { position:absolute; left:50%; top:50%; transform:translate(-50%,0); pointer-events:none; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#93C5FD; white-space:nowrap; text-shadow:0 0 10px rgba(37,99,235,0.7); animation:picame 3.4s ease-out infinite; }
+  @keyframes lbBackIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes lbBackOut { from { opacity:1; } to { opacity:0; } }
+  @keyframes lbPop { 0% { opacity:0; transform:translateY(46px) scale(0.84); } 58% { opacity:1; transform:translateY(0) scale(1.03); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes lbPopOut { from { opacity:1; transform:translateY(0) scale(1); } to { opacity:0; transform:translateY(34px) scale(0.88); } }
+  .bp-scroll::-webkit-scrollbar { width: 6px; }
+  .bp-scroll::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.4); border-radius: 99px; }
+  /* transición suave del cambio de identidad (ambos sentidos) */
+  .bp-root * { transition: background-color .5s ease, color .5s ease, border-color .5s ease, box-shadow .5s ease, border-radius .5s ease; }
+  /* modo público (GitHub Pages): oculta chatbot y tarjetas de precio */
+  .public-mode .bp-private { display: none !important; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Gruppo&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== TEMA GRUPO LAZZA — clic en el orbe del hero. Sigue DESIGN.md.
+     Nota: el navegador normaliza los estilos inline a rgb()/rgba() con espacios
+     y "prop: value", por eso los selectores usan esas formas exactas. ===== */
+  .theme-lazza { background:#5C4F47 !important; font-family:'Jost','Futura PT','Century Gothic',sans-serif !important; }
+
+  /* ocultar partículas ambientales azul-violeta */
+  .theme-lazza [aria-hidden="true"] { display:none !important; }
+
+  /* tipografía: títulos a Gruppo (minúsculas, como el logotipo); cuerpo a Jost (Futura libre) */
+  .theme-lazza [style*="Montserrat"] { font-family:'Gruppo','Jost','Futura PT',sans-serif !important; font-weight:400 !important; letter-spacing:0.06em !important; text-transform:lowercase !important; }
+  .theme-lazza [style*="Inter"] { font-family:'Jost','Futura PT','Century Gothic',sans-serif !important; }
+
+  /* navbar: fondo azul translúcido -> superficie taupe (línea tectónica vía borde neutro) */
+  .theme-lazza [style*="background: rgba(10, 20, 36, 0.72)"] { background:rgba(43, 41, 38, 0.85) !important; }
+
+  /* superficies glass / gradientes / placeholders -> cards planas */
+  .theme-lazza [style*="background: rgba(255, 255, 255, 0.04)"],
+  .theme-lazza [style*="background: rgba(255, 255, 255, 0.024)"],
+  .theme-lazza [style*="background: rgba(255, 255, 255, 0.05)"],
+  .theme-lazza [style*="background: rgba(255, 255, 255, 0.06)"],
+  .theme-lazza [style*="background: rgb(11, 15, 26)"],
+  .theme-lazza [style*="background: linear-gradient"] { background:#3F3C39 !important; }
+
+  /* ---- COLOR: cero azul ---- */
+  /* texto azul/sky/violeta -> dorado */
+  .theme-lazza [style*="color: rgb(147, 197, 253)"],
+  .theme-lazza [style*="color: rgb(37, 99, 235)"],
+  .theme-lazza [style*="color: rgb(124, 58, 237)"],
+  .theme-lazza [style*="color: rgb(30, 58, 95)"] { color:#BD9A00 !important; }
+  /* texto slate -> claro Lazza */
+  .theme-lazza [style*="color: rgb(148, 163, 184)"],
+  .theme-lazza [style*="color: rgb(203, 213, 225)"],
+  .theme-lazza [style*="color: rgb(226, 232, 240)"],
+  .theme-lazza [style*="color: rgb(71, 85, 105)"] { color:#D4D4D4 !important; }
+  .theme-lazza [style*="color: rgb(100, 116, 139)"] { color:#9E9590 !important; }
+  /* fondos azul/sky -> dorado tenue / dorado */
+  .theme-lazza [style*="background: rgba(37, 99, 235"] { background:rgba(189, 154, 0, 0.12) !important; }
+  .theme-lazza [style*="background: rgba(147, 197, 253"],
+  .theme-lazza [style*="background: rgb(147, 197, 253)"],
+  .theme-lazza [style*="background: rgb(124, 58, 237)"] { background:#BD9A00 !important; }
+  /* bordes azules -> neutros; sky -> dorado tenue; cajas hex -> dorado; triángulos -> solo lado coloreado */
+  .theme-lazza [style*="solid rgba(37, 99, 235"],
+  .theme-lazza [style*="solid rgba(100, 116, 139"] { border-color:rgba(255, 255, 255, 0.10) !important; }
+  .theme-lazza [style*="solid rgba(147, 197, 253"] { border-color:rgba(189, 154, 0, 0.35) !important; }
+  .theme-lazza [style*="2px solid rgb(147, 197, 253)"] { border-color:#BD9A00 !important; }
+  .theme-lazza [style*="border-left:"][style*="solid rgb(147, 197, 253)"] { border-left-color:#BD9A00 !important; }
+
+  /* orbes (gradiente insignia) -> disco dorado plano */
+  .theme-lazza [style*="background: radial-gradient(circle at 34% 30%"] { background:#BD9A00 !important; border-color:rgba(255, 255, 255, 0.2) !important; }
+
+  /* ---- ESQUINAS rectas (DESIGN.md §10); círculos exentos ---- */
+  .theme-lazza [style*="border-radius:"] { border-radius:0 !important; }
+  .theme-lazza [style*="border-radius: 50%"] { border-radius:50% !important; }
+
+  /* ---- SOMBRAS: ninguna (DESIGN.md §10: oscuridad, no elevación) ---- */
+  .theme-lazza [style*="box-shadow"] { box-shadow:none !important; }
+
+  /* selección dorada, no azul */
+  .theme-lazza ::selection { background:rgba(189, 154, 0, 0.40); color:#fff; }
+
+  /* ---- BOTONES (DESIGN.md §6): MAYÚSCULAS espaciadas, sin radio ---- */
+  /* primario: dorado, texto oscuro */
+  .theme-lazza [style*="background: rgb(37, 99, 235)"],
+  .theme-lazza [style*="background: rgb(34, 165, 88)"][style*="border-radius: 9999px"] {
+    background:#BD9A00 !important; color:#2B2926 !important;
+    border:none !important; border-radius:0 !important;
+    text-transform:uppercase !important; letter-spacing:0.15em !important;
+  }
+  /* secundario: transparente, texto blanco, borde muted */
+  .theme-lazza [style*="background: rgba(37, 99, 235, 0.08)"] {
+    background:transparent !important; color:#FFFFFF !important;
+    border:1px solid #9E9590 !important; border-radius:0 !important;
+    text-transform:uppercase !important; letter-spacing:0.15em !important;
+  }
+
+  /* partículas "Pícame": dorado en vez de azul */
+  .theme-lazza .pica-chip { color:#BD9A00 !important; text-shadow:0 0 10px rgba(189, 154, 0, 0.6) !important; }
+
+  /* el orbe del hero como disparador */
+  .lazza-trigger { cursor:pointer; }
+</style>
+</helmet>
+
+<div class="{{ rootClass }}" style="position:relative; background:#0A1424; color:#E2E8F0; font-family:'Inter',sans-serif; overflow-x:hidden; min-height:100vh;">
+
+  <!-- ambient field -->
+  <div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:0; opacity:{{ ambientGlow }};">
+    <div style="position:absolute; top:8%; left:12%; width:7px; height:7px; border-radius:50%; background:#2563EB; filter:blur(2px); box-shadow:0 0 20px 4px rgba(37,99,235,0.6); animation:dotDrift 9s ease-in-out infinite;"></div>
+    <div style="position:absolute; top:24%; left:82%; width:5px; height:5px; border-radius:50%; background:#7C3AED; filter:blur(1px); box-shadow:0 0 18px 4px rgba(124,58,237,0.6); animation:dotDrift 11s ease-in-out infinite 1s;"></div>
+    <div style="position:absolute; top:62%; left:6%; width:6px; height:6px; border-radius:50%; background:#93C5FD; filter:blur(1px); box-shadow:0 0 16px 3px rgba(147,197,253,0.5); animation:dotDrift 13s ease-in-out infinite 2s;"></div>
+    <div style="position:absolute; top:78%; left:74%; width:6px; height:6px; border-radius:50%; background:#2563EB; filter:blur(2px); box-shadow:0 0 20px 5px rgba(37,99,235,0.5); animation:dotDrift 10s ease-in-out infinite 0.5s;"></div>
+    <div style="position:absolute; top:46%; left:48%; width:4px; height:4px; border-radius:50%; background:#7C3AED; filter:blur(1px); box-shadow:0 0 14px 3px rgba(124,58,237,0.5); animation:dotDrift 12s ease-in-out infinite 1.5s;"></div>
+    <div style="position:absolute; top:38%; left:24%; width:5px; height:5px; border-radius:50%; background:#93C5FD; filter:blur(1px); box-shadow:0 0 14px 3px rgba(147,197,253,0.4); animation:dotDrift 14s ease-in-out infinite 3s;"></div>
+    <div style="position:absolute; top:88%; left:34%; width:5px; height:5px; border-radius:50%; background:#2563EB; filter:blur(2px); box-shadow:0 0 18px 4px rgba(37,99,235,0.45); animation:dotDrift 11s ease-in-out infinite 2.5s;"></div>
+    <div style="position:absolute; top:6%; left:58%; width:4px; height:4px; border-radius:50%; background:#7C3AED; filter:blur(1px); box-shadow:0 0 12px 3px rgba(124,58,237,0.45); animation:dotDrift 15s ease-in-out infinite 4s;"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav style="position:sticky; top:0; z-index:40; display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:rgba(10,20,36,0.72); backdrop-filter:blur(20px); border-bottom:1px solid rgba(37,99,235,0.18);">
+    <div style="display:flex; align-items:center; gap:13px;">
+      <div style="width:38px; height:38px; flex:none; border-radius:50%; border:1px solid rgba(255,255,255,0.14); background:radial-gradient(circle at 34% 30%, rgba(255,255,255,0.45) 0%, transparent 24%), radial-gradient(circle at 66% 74%, #7C3AED 0%, transparent 52%), radial-gradient(circle at 40% 60%, #2563EB 0%, transparent 60%), radial-gradient(circle at 50% 46%, #1E3A5F 0%, #0A1424 80%); box-shadow:inset -3px -4px 10px rgba(0,0,0,0.55), inset 2px 3px 9px rgba(120,160,255,0.25), 0 0 22px rgba(37,99,235,0.4);"></div>
+      <div style="display:flex; flex-direction:column; gap:2px;">
+        <span style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:17px; color:#fff; letter-spacing:-0.01em; line-height:1;">BubbleMesh Prop</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1.4px; color:#93C5FD; text-transform:uppercase;">{{ sectorLabel }}</span>
+      </div>
+    </div>
+    <a href="#paquete" style="display:none; font-family:'Inter',sans-serif; font-weight:600; font-size:14px; color:#93C5FD; text-decoration:none; padding:9px 18px; border-radius:9999px; border:1px solid rgba(37,99,235,0.4);">Ver paquete piloto</a>
+  </nav>
+
+  <!-- HERO -->
+  <header style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:72px 32px 90px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+    <div style="position:relative; margin-bottom:38px; animation:orbFloat 7s ease-in-out infinite;">
+      <div class="lazza-trigger" onClick="{{ toggleTheme }}" title="Cambiar identidad de marca" style="width:188px; height:188px; border-radius:50%; cursor:pointer; border:1px solid rgba(255,255,255,0.14); background:radial-gradient(circle at 34% 30%, rgba(255,255,255,0.45) 0%, transparent 24%), radial-gradient(circle at 66% 74%, #7C3AED 0%, transparent 52%), radial-gradient(circle at 40% 60%, #2563EB 0%, transparent 60%), radial-gradient(circle at 50% 46%, #1E3A5F 0%, #0A1424 80%); box-shadow:inset -10px -12px 30px rgba(0,0,0,0.55), inset 7px 9px 24px rgba(120,160,255,0.28), 0 0 80px rgba(37,99,235,0.45);"></div>
+      <!-- partículas "Pícame" que emite el orbe (invitan al clic) -->
+      <span class="pica-chip" style="left:50%; animation-delay:0s;">Pícame ✨</span>
+      <span class="pica-chip" style="left:30%; animation-delay:0.9s;">Pícame</span>
+      <span class="pica-chip" style="left:68%; animation-delay:1.7s;">Pícame ✦</span>
+      <span class="pica-chip" style="left:42%; animation-delay:2.5s;">Pícame</span>
+      <span class="pica-chip" style="left:60%; animation-delay:3.2s;">Pícame ✨</span>
+    </div>
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:9999px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.32); margin-bottom:26px;">
+      <span style="width:6px; height:6px; border-radius:50%; background:#93C5FD; box-shadow:0 0 8px #93C5FD;"></span>
+      <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.6px; text-transform:uppercase; color:#93C5FD;">Alianza estratégica · Grupo Lazza</span>
+    </div>
+    <h1 style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:clamp(34px,5.4vw,60px); line-height:1.04; letter-spacing:-0.025em; color:#fff; margin:0 0 22px; max-width:880px; text-wrap:balance;">Tu equipo de IA especializado en desarrollo inmobiliario. Tú diseñas, construyes y cierras.</h1>
+    <p style="font-family:'Inter',sans-serif; font-size:clamp(16px,2vw,19px); line-height:1.6; color:#94a3b8; margin:0 0 36px; max-width:680px; text-wrap:pretty;">Lazza diseña. OAL construye. Lamzo da el toque final. Bubble Prop conecta a las tres con un sistema que atrae clientes y posiciona cada marca, sin que Jaime tenga que estar en todas.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center;">
+      <a href="#solucion" style="font-family:'Inter',sans-serif; font-weight:600; font-size:15px; color:#fff; text-decoration:none; padding:15px 28px; border-radius:9999px; background:#2563EB; box-shadow:0 8px 30px rgba(37,99,235,0.45); border:1px solid rgba(147,197,253,0.3);">Ver cómo funciona ↓</a>
+      <button class="bp-private" onClick="{{ openChat }}" style="font-family:'Inter',sans-serif; font-weight:600; font-size:15px; color:#93C5FD; cursor:pointer; padding:15px 28px; border-radius:9999px; background:rgba(37,99,235,0.08); border:1px solid rgba(37,99,235,0.4);">Hablar con el agente del proyecto →</button>
+    </div>
+  </header>
+
+  <!-- PROBLEMA -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:80px 32px;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#93C5FD; margin-bottom:16px;">El reto de Grupo Lazza</div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(28px,4vw,42px); line-height:1.08; letter-spacing:-0.02em; color:#fff; margin:0 0 48px; max-width:680px; text-wrap:balance;">Todo pasa por Jaime. Y eso tiene un límite.</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+      <div style="background:rgba(255,255,255,0.04); backdrop-filter:blur(20px); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:28px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#fff; margin-bottom:10px;">Tres empresas, una sola voz comercial.</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.65; color:#94a3b8; margin:0;">Lazza, OAL y Lamzo cubren el ciclo completo del desarrollo — pero solo Jaime sostiene la relación con cada cliente.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); backdrop-filter:blur(20px); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:28px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#fff; margin-bottom:10px;">El contenido no sale con constancia.</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.65; color:#94a3b8; margin:0;">Cada pieza depende de agendar, producir y esperar. El feed se queda quieto entre proyecto y proyecto.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); backdrop-filter:blur(20px); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:28px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#fff; margin-bottom:10px;">En preventa no hay nada que mostrar.</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.65; color:#94a3b8; margin:0;">Antes de la primera columna, solo hay planos y una promesa — y convencer con eso es el momento más difícil de vender.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); backdrop-filter:blur(20px); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:28px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; color:#fff; margin-bottom:10px;">El crecimiento depende de una persona.</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.65; color:#94a3b8; margin:0;">Mientras Jaime no tenga estructura que lo respalde, el grupo crece al ritmo de sus horas disponibles, no de su capacidad real.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUCION -->
+  <section id="solucion" style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:80px 32px;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#93C5FD; margin-bottom:16px;">La solución</div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(28px,4vw,42px); line-height:1.08; letter-spacing:-0.02em; color:#fff; margin:0 0 24px; max-width:780px; text-wrap:balance;">No contratas una herramienta. Contratas un sistema que opera por ti.</h2>
+    <p style="font-family:'Inter',sans-serif; font-size:18px; line-height:1.7; color:#cbd5e1; margin:0 0 56px; max-width:740px; text-wrap:pretty;">Bubble Prop combina Community Managers humanos con agentes de IA entrenados en el contexto de cada marca. No reemplaza el criterio de Jaime — lo libera para que se enfoque en diseñar, construir y cerrar, mientras el sistema sostiene la presencia digital, la atención a prospectos y la producción de contenido.</p>
+
+    <!-- funnel -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; align-items:stretch;">
+      <div style="position:relative; background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:30px 26px; box-shadow:0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:#fff; letter-spacing:0.02em;">LAZZA</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; color:#93C5FD; text-transform:uppercase; margin:6px 0 16px;">Diseño</div>
+        <div style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:#E2E8F0; margin-bottom:4px;">Atrae con visión</div>
+        <p style="font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; color:#94a3b8; margin:0;">Arquitectura, concepto y visión — la primera impresión del proyecto.</p>
+      </div>
+      <div style="position:relative; background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:30px 26px; box-shadow:0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:#fff; letter-spacing:0.02em;">OAL</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; color:#93C5FD; text-transform:uppercase; margin:6px 0 16px;">Construcción</div>
+        <div style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:#E2E8F0; margin-bottom:4px;">Da confianza con ejecución</div>
+        <p style="font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; color:#94a3b8; margin:0;">Obra real, avance documentado, entrega cumplida.</p>
+      </div>
+      <div style="position:relative; background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:20px; padding:30px 26px; box-shadow:0 0 44px rgba(37,99,235,0.10);">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:22px; color:#fff; letter-spacing:0.02em;">LAMZO</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; color:#93C5FD; text-transform:uppercase; margin:6px 0 16px;">Interiorismo</div>
+        <div style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:#E2E8F0; margin-bottom:4px;">Posiciona la decisión</div>
+        <p style="font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; color:#94a3b8; margin:0;">Interiorismo, staging, el espacio ya habitado en la imaginación del comprador.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS header -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:60px 32px 10px;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#93C5FD; margin-bottom:16px;">El servicio en vivo</div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(26px,3.6vw,38px); line-height:1.1; letter-spacing:-0.02em; color:#fff; margin:0; max-width:720px; text-wrap:balance;">Cada módulo, demostrado con un ejemplo real construido para Grupo Lazza.</h2>
+  </section>
+
+  <!-- SERVICIO Avatar -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:48px 32px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:40px; align-items:center;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:1.3px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Lazza · Lamzo</div>
+        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(23px,3vw,32px); line-height:1.12; letter-spacing:-0.02em; color:#fff; margin:0 0 18px; text-wrap:balance;">Jaime, presente en cada publicación — sin grabar todos los días.</h3>
+        <p style="font-family:'Inter',sans-serif; font-size:16px; line-height:1.7; color:#94a3b8; margin:0;">Un Avatar de IA entrenado para moverse y hablar como Jaime permite mantener presencia constante en redes sin que él tenga que estar frente a cámara cada vez. Útil para explicar conceptos de diseño, dar contexto de un proyecto o anunciar un evento — con la consistencia que el contenido manual nunca logra sostener.</p>
+      </div>
+      <div style="display:flex; justify-content:center;">
+        <div onClick="{{ openAvatar }}" title="Reproducir el avatar de Jaime" style="position:relative; cursor:pointer; width:236px; max-width:100%; aspect-ratio:9/16; border-radius:18px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22); box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+          <img src="media/avatar/jaime-avatar-poster.webp" alt="Avatar de IA de Jaime Lavin" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+          <div style="position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.12);">
+            <div style="width:64px; height:64px; border-radius:50%; border:1px solid rgba(255,255,255,0.6); background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center;">
+              <div style="width:0; height:0; border-left:20px solid #ffffff; border-top:13px solid transparent; border-bottom:13px solid transparent; margin-left:5px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIO Web por proyecto -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:48px 32px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:40px; align-items:center;">
+      <div style="order:2;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:1.3px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Lazza · OAL · Lamzo</div>
+        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(23px,3vw,32px); line-height:1.12; letter-spacing:-0.02em; color:#fff; margin:0 0 18px; text-wrap:balance;">Cada desarrollo, su propia página. No una más en el sitio corporativo.</h3>
+        <p style="font-family:'Inter',sans-serif; font-size:16px; line-height:1.7; color:#94a3b8; margin:0;">Cuando OAL lanza un proyecto nuevo, no compite por atención dentro de una página general — tiene su propio espacio digital, diseñado para ese desarrollo específico: ubicación, avance, tipologías, precios y contacto directo. Y cuando la propiedad ha recibido premios o reconocimientos, la página los pone al frente — porque un desarrollo galardonado se vende solo.</p>
+      </div>
+      <div style="order:1;">
+        <div onClick="{{ openProyecto }}" title="Abrir el sitio del proyecto" style="position:relative; cursor:pointer; width:100%; aspect-ratio:16/11; border-radius:18px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22); box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+          <img src="media/web-proyecto/oal-proyecto-demo.webp" alt="Landing del proyecto — Lazza Arquitectos" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+          <div style="position:absolute; top:12px; right:12px; z-index:2; width:30px; height:30px; border-radius:9px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.45); display:flex; align-items:center; justify-content:center; color:#93C5FD; font-size:15px;">↗</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIO Contenido con IA -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:48px 32px;">
+    <div style="max-width:680px; margin-bottom:34px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:1.3px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Lazza · OAL · Lamzo</div>
+      <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(23px,3vw,32px); line-height:1.12; letter-spacing:-0.02em; color:#fff; margin:0 0 18px; text-wrap:balance;">Constancia sin depender de una sesión de fotos.</h3>
+      <p style="font-family:'Inter',sans-serif; font-size:16px; line-height:1.7; color:#94a3b8; margin:0;">Posts, videos/carruseles y stories producidos con IA para mantener el feed de cada marca activo — sin que la falta de tiempo o de producción física detenga el contenido. Misma calidad visual, ritmo constante.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+      <div onClick="{{ openPost }}" title="Ver el post" style="position:relative; cursor:pointer; aspect-ratio:4/5; border-radius:14px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22);">
+        <img src="media/contenido/lazza-post-01.webp" alt="Post Lazza — boceto a render" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+        <div style="position:absolute; top:8px; right:8px; z-index:2; width:24px; height:24px; border-radius:7px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.45); display:flex; align-items:center; justify-content:center; color:#93C5FD; font-size:12px;">⤢</div>
+      </div>
+      <div onClick="{{ openVid }}" title="Ver el carrusel" style="position:relative; cursor:pointer; aspect-ratio:4/5; border-radius:14px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22);">
+        <img src="media/contenido/oal-video-01.webp" alt="Carrusel OAL — avance de obra" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+        <div style="position:absolute; top:8px; right:8px; z-index:2; width:24px; height:24px; border-radius:7px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.45); display:flex; align-items:center; justify-content:center; color:#93C5FD; font-size:12px;">⤢</div>
+      </div>
+      <div onClick="{{ openStory }}" title="Reproducir el story" style="position:relative; cursor:pointer; aspect-ratio:4/5; border-radius:14px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22);">
+        <img src="media/contenido/lamzo-story-poster.webp" alt="Story Lamzo — vacío a amueblado" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+        <div style="position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.12);">
+          <div style="width:48px; height:48px; border-radius:50%; border:1px solid rgba(255,255,255,0.6); background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-left:15px solid #ffffff; border-top:10px solid transparent; border-bottom:10px solid transparent; margin-left:4px;"></div>
+          </div>
+        </div>
+        <div style="position:absolute; top:8px; right:8px; z-index:2; width:24px; height:24px; border-radius:7px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.45); display:flex; align-items:center; justify-content:center; color:#93C5FD; font-size:12px;">⤢</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIO Plataforma a la medida (MVP) -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:48px 32px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:40px; align-items:center;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:1.3px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Plataforma a la medida · MVP</div>
+        <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(23px,3vw,32px); line-height:1.12; letter-spacing:-0.02em; color:#fff; margin:0 0 18px; text-wrap:balance;">No solo contenido. Sistemas que escalan tu operación.</h3>
+        <p style="font-family:'Inter',sans-serif; font-size:16px; line-height:1.7; color:#94a3b8; margin:0 0 26px;">El mismo equipo que produce tu contenido construye el software que ordena tu operación. Estandarizamos cada proceso, lo automatizamos y lo escalamos en una plataforma a la medida — para que el grupo crezca con sistema, no con más horas.</p>
+        <button onClick="{{ openPrototipo }}" style="font-family:'Inter',sans-serif; font-weight:600; font-size:15px; color:#93C5FD; cursor:pointer; padding:15px 28px; border-radius:9999px; background:rgba(37,99,235,0.08); border:1px solid rgba(37,99,235,0.4);">Ver el prototipo en vivo ↗</button>
+      </div>
+      <div>
+        <div onClick="{{ openPrototipo }}" title="Abrir el prototipo del ERP" style="position:relative; cursor:pointer; width:100%; aspect-ratio:16/11; border-radius:18px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.22); box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+          <img src="media/plataforma/erp-prototipo.webp" alt="Prototipo del ERP de Grupo Lazza" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;" />
+          <div style="position:absolute; top:12px; right:12px; z-index:2; width:30px; height:30px; border-radius:9px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.45); display:flex; align-items:center; justify-content:center; color:#93C5FD; font-size:15px;">↗</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIO Chat -->
+  <section class="bp-private" style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:48px 32px;">
+    <div style="background:linear-gradient(135deg, rgba(37,99,235,0.10), rgba(124,58,237,0.06)); border:1px solid rgba(37,99,235,0.3); border-radius:24px; padding:clamp(28px,4vw,52px); box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 60px rgba(37,99,235,0.12); display:flex; flex-direction:column; align-items:flex-start; gap:22px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="display:inline-flex; align-items:center; gap:7px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#22c55e;"><span style="width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation:pulseGlow 2s infinite;"></span>En vivo</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:1.3px; text-transform:uppercase; color:#93C5FD;">Atención inteligente</span>
+      </div>
+      <h3 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(24px,3.4vw,36px); line-height:1.1; letter-spacing:-0.02em; color:#fff; margin:0; max-width:640px; text-wrap:balance;">Pregúntale al proyecto. En vivo, ahora mismo.</h3>
+      <p style="font-family:'Inter',sans-serif; font-size:17px; line-height:1.7; color:#cbd5e1; margin:0; max-width:680px; text-wrap:pretty;">Este no es un mockup — es un agente real, conectado y respondiendo con la información del proyecto piloto. Así es como un prospecto interactúa con un desarrollo de Grupo Lazza a cualquier hora, sin esperar a que alguien del equipo esté disponible.</p>
+      <button onClick="{{ openChat }}" style="display:inline-flex; align-items:center; gap:11px; font-family:'Inter',sans-serif; font-weight:600; font-size:15px; color:#fff; cursor:pointer; padding:15px 26px; border-radius:9999px; background:#22a558; border:none; box-shadow:0 8px 30px rgba(34,197,88,0.35);">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23 4.54 0 8.23 3.7 8.23 8.24 0 4.54-3.7 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+        Abrir el agente del proyecto
+      </button>
+    </div>
+  </section>
+
+  <!-- PAQUETE -->
+  <section id="paquete" style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:80px 32px;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#93C5FD; margin-bottom:16px;">Cliente piloto</div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(28px,4vw,42px); line-height:1.08; letter-spacing:-0.02em; color:#fff; margin:0 0 40px; max-width:700px; text-wrap:balance;">El primer cliente de Bubble Prop recibe el sistema completo.</h2>
+
+    <div style="overflow-x:auto; border-radius:20px; border:1px solid rgba(37,99,235,0.3); background:rgba(255,255,255,0.025); box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+      <table style="width:100%; border-collapse:collapse; min-width:560px; font-family:'Inter',sans-serif;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:18px 22px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px; color:#94a3b8; border-bottom:1px solid rgba(37,99,235,0.22);">Servicio</th>
+            <th style="text-align:left; padding:18px 22px; border-bottom:1px solid rgba(37,99,235,0.22);"><span style="display:inline-flex; align-items:center; gap:7px; font-family:'Inter',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.6px; text-transform:uppercase; color:#93C5FD; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.32); padding:5px 11px; border-radius:9999px;">★ Cliente Piloto</span></th>
+            <th style="text-align:left; padding:18px 22px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px; color:#64748B; border-bottom:1px solid rgba(37,99,235,0.22);">Estándar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ pkgRows }}" as="row" hint-placeholder-count="0">
+            <tr>
+              <td style="padding:15px 22px; font-size:14px; font-weight:500; color:#E2E8F0; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top;">{{ row.s }}</td>
+              <td style="padding:15px 22px; font-size:14px; color:#fff; background:rgba(37,99,235,0.06); border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top;">{{ row.p }}</td>
+              <td style="padding:15px 22px; font-size:14px; color:#64748B; border-bottom:1px solid rgba(255,255,255,0.05); vertical-align:top;">{{ row.e }}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- inversión (tarjetas que giran) -->
+    <div class="bp-private" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-top:24px;">
+
+      <!-- MENSUAL -->
+      <div onClick="{{ toggleM }}" style="perspective:1400px; cursor:pointer; min-height:212px;">
+        <div style="position:relative; width:100%; height:100%; min-height:212px; transition:transform 0.7s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; transform:{{ mFlip }};">
+          <!-- frente: costo estándar -->
+          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:rgba(255,255,255,0.04); border:1px solid rgba(100,116,139,0.32); border-radius:20px; padding:30px; box-shadow:0 8px 40px rgba(0,0,0,0.4); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#64748B; margin-bottom:14px;">Inversión mensual · Estándar por empresa</div>
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:38px; color:#64748B; letter-spacing:-0.02em; text-decoration:line-through; text-decoration-color:rgba(148,163,184,0.6);">$18,000.00</span>
+                <span style="font-family:'Inter',sans-serif; font-size:14px; color:#64748B; text-decoration:line-through;">MXN / mes</span>
+              </div>
+              <div style="font-family:'Inter',sans-serif; font-size:13px; color:#64748B; margin-top:8px;">Tarifa regular por cada marca — Lazza, OAL y Lamzo.</div>
+            </div>
+            <div style="display:inline-flex; align-self:flex-start; align-items:center; gap:7px; margin-top:18px; padding:6px 12px; border-radius:9999px; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.3); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:#93C5FD;">↻ Toca para ver tu precio piloto</div>
+          </div>
+          <!-- reverso: precio piloto -->
+          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg); background:linear-gradient(135deg, rgba(37,99,235,0.16), rgba(124,58,237,0.08)); border:1px solid rgba(37,99,235,0.5); border-radius:20px; padding:30px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 50px rgba(37,99,235,0.22); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Tu precio · Cliente piloto</div>
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:38px; color:#fff; letter-spacing:-0.02em;">$10,134.60</span>
+                <span style="font-family:'Inter',sans-serif; font-size:14px; color:#cbd5e1;">MXN / mes</span>
+              </div>
+              <div style="font-family:'Inter',sans-serif; font-size:13px; color:#cbd5e1; margin-top:8px;">Por cada marca: Lazza, OAL y Lamzo.</div>
+            </div>
+            <div style="display:inline-flex; align-self:flex-start; align-items:center; gap:7px; margin-top:18px; padding:6px 12px; border-radius:9999px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:#94a3b8;">↻ Volver</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANUAL -->
+      <div onClick="{{ toggleA }}" style="perspective:1400px; cursor:pointer; min-height:212px;">
+        <div style="position:relative; width:100%; height:100%; min-height:212px; transition:transform 0.7s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; transform:{{ aFlip }};">
+          <!-- frente: costo estándar -->
+          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:rgba(255,255,255,0.04); border:1px solid rgba(100,116,139,0.32); border-radius:20px; padding:30px; box-shadow:0 8px 40px rgba(0,0,0,0.4); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#64748B; margin-bottom:14px;">Inversión anual · Estándar por empresa</div>
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:38px; color:#64748B; letter-spacing:-0.02em; text-decoration:line-through; text-decoration-color:rgba(148,163,184,0.6);">$216,000.00</span>
+                <span style="font-family:'Inter',sans-serif; font-size:14px; color:#64748B; text-decoration:line-through;">MXN / año</span>
+              </div>
+              <div style="font-family:'Inter',sans-serif; font-size:13px; color:#64748B; margin-top:8px;">Tarifa regular por cada marca (12 meses).</div>
+            </div>
+            <div style="display:inline-flex; align-self:flex-start; align-items:center; gap:7px; margin-top:18px; padding:6px 12px; border-radius:9999px; background:rgba(37,99,235,0.12); border:1px solid rgba(37,99,235,0.3); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:#93C5FD;">↻ Toca para ver tu precio piloto</div>
+          </div>
+          <!-- reverso: precio piloto -->
+          <div style="position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg); background:linear-gradient(135deg, rgba(37,99,235,0.16), rgba(124,58,237,0.08)); border:1px solid rgba(37,99,235,0.5); border-radius:20px; padding:30px; box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 50px rgba(37,99,235,0.22); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Tu precio · Cliente piloto</div>
+              <div style="display:flex; align-items:baseline; gap:8px;">
+                <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:38px; color:#fff; letter-spacing:-0.02em;">$121,615.20</span>
+                <span style="font-family:'Inter',sans-serif; font-size:14px; color:#cbd5e1;">MXN / año</span>
+              </div>
+              <div style="font-family:'Inter',sans-serif; font-size:13px; color:#cbd5e1; margin-top:8px;">A cambio de retroalimentación activa y uso como caso de estudio.</div>
+            </div>
+            <div style="display:inline-flex; align-self:flex-start; align-items:center; gap:7px; margin-top:18px; padding:6px 12px; border-radius:9999px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:#94a3b8;">↻ Volver</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- total piloto (aparece al girar ambas a Piloto) -->
+    <sc-if value="{{ showTotal }}" hint-placeholder-val="{{ false }}">
+    <div class="bp-private" style="margin-top:18px; background:linear-gradient(135deg, rgba(37,99,235,0.18), rgba(124,58,237,0.10)); border:1px solid rgba(37,99,235,0.5); border-radius:20px; padding:clamp(26px,3.4vw,38px); box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 60px rgba(37,99,235,0.22); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:22px; animation:fadeUp 0.55s cubic-bezier(.2,.7,.2,1) both;">
+      <div style="min-width:240px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#93C5FD; margin-bottom:14px;">Total piloto · Las tres empresas</div>
+        <div style="display:flex; align-items:baseline; gap:9px;">
+          <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:clamp(40px,5vw,54px); color:#fff; letter-spacing:-0.025em;">$30,403.80</span>
+          <span style="font-family:'Inter',sans-serif; font-size:15px; color:#cbd5e1;">MXN / mes</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif; font-size:13.5px; color:#cbd5e1; margin-top:10px;">Por llevar a Lazza, OAL y Lamzo — el sistema completo operando para Grupo Lazza.</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; font-family:'Montserrat',sans-serif; font-weight:800; color:#93C5FD;">
+        <span style="font-size:clamp(22px,3vw,30px);">$10,134.60</span>
+        <span style="font-family:'Inter',sans-serif; font-weight:600; font-size:20px; color:#64748B;">×</span>
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:50%; border:1px solid rgba(37,99,235,0.4); background:rgba(37,99,235,0.12); font-size:20px; color:#fff;">3</span>
+        <span style="font-family:'Inter',sans-serif; font-weight:600; font-size:20px; color:#64748B;">=</span>
+        <span style="font-size:clamp(26px,3.4vw,34px); color:#fff;">$30,403.80</span>
+      </div>
+    </div>
+    </sc-if>
+  </section>
+
+  <!-- ALIANZA -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:70px 32px;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.6px; text-transform:uppercase; color:#93C5FD; margin-bottom:16px;">Más allá del piloto</div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:clamp(28px,4vw,42px); line-height:1.08; letter-spacing:-0.02em; color:#fff; margin:0 0 24px; max-width:680px; text-wrap:balance;">Esto no termina en un proyecto. Empieza una alianza.</h2>
+    <p style="font-family:'Inter',sans-serif; font-size:18px; line-height:1.7; color:#cbd5e1; margin:0 0 48px; max-width:740px; text-wrap:pretty;">Grupo Lazza es el punto de entrada de Bubble Prop al sector inmobiliario. El caso de éxito documentado con Lazza, OAL y Lamzo se convierte en la prueba que abre puertas con otros despachos y desarrolladoras del sector.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px;">
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:18px; padding:26px;">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:#2563EB; margin-bottom:12px;">01</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; color:#E2E8F0; margin:0;">Piloto pagado con Grupo Lazza — Lazza, OAL y Lamzo.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:18px; padding:26px;">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:#2563EB; margin-bottom:12px;">02</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; color:#E2E8F0; margin:0;">Caso de estudio documentado, con resultados medibles por marca.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:18px; padding:26px;">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:#2563EB; margin-bottom:12px;">03</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; color:#E2E8F0; margin:0;">Jaime Lavin como socio de entrada — su red abre puertas en el sector.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(37,99,235,0.3); border-radius:18px; padding:26px;">
+        <div style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:24px; color:#2563EB; margin-bottom:12px;">04</div>
+        <p style="font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; color:#E2E8F0; margin:0;">Escalamiento de Bubble Prop con el modelo probado en Xperience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section style="position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:90px 32px 110px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+    <div style="width:96px; height:96px; border-radius:50%; border:1px solid rgba(255,255,255,0.14); margin-bottom:34px; background:radial-gradient(circle at 34% 30%, rgba(255,255,255,0.45) 0%, transparent 24%), radial-gradient(circle at 66% 74%, #7C3AED 0%, transparent 52%), radial-gradient(circle at 40% 60%, #2563EB 0%, transparent 60%), radial-gradient(circle at 50% 46%, #1E3A5F 0%, #0A1424 80%); box-shadow:inset -6px -7px 18px rgba(0,0,0,0.55), inset 4px 5px 14px rgba(120,160,255,0.25), 0 0 60px rgba(37,99,235,0.45);"></div>
+    <h2 style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:clamp(30px,4.6vw,52px); line-height:1.05; letter-spacing:-0.025em; color:#fff; margin:0 0 30px; max-width:760px; text-wrap:balance;">Tu competencia no tiene esto. Tú podrías ser el primero.</h2>
+    <button class="bp-private" onClick="{{ openChat }}" style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:#fff; cursor:pointer; padding:17px 34px; border-radius:9999px; background:#2563EB; box-shadow:0 8px 36px rgba(37,99,235,0.5); border:1px solid rgba(147,197,253,0.3);">Hablar del proyecto →</button>
+    <div style="margin-top:64px; display:flex; align-items:center; gap:11px; opacity:0.8;">
+      <div style="width:26px; height:26px; border-radius:50%; border:1px solid rgba(255,255,255,0.14); background:radial-gradient(circle at 34% 30%, rgba(255,255,255,0.45) 0%, transparent 24%), radial-gradient(circle at 66% 74%, #7C3AED 0%, transparent 52%), radial-gradient(circle at 40% 60%, #2563EB 0%, transparent 60%), radial-gradient(circle at 50% 46%, #1E3A5F 0%, #0A1424 80%); box-shadow:0 0 14px rgba(37,99,235,0.4);"></div>
+      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.3px; color:#64748B; text-transform:uppercase;">BubbleMesh Prop · Piloto Grupo Lazza · 2026</span>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeMedia }}" style="position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:48px 24px; background:rgba(5,9,18,0.84); backdrop-filter:blur(16px); animation:{{ lbBackAnim }};">
+    <div onClick="{{ stop }}" style="position:relative; animation:{{ lbContentAnim }};">
+      <button onClick="{{ closeMedia }}" aria-label="Cerrar" style="position:absolute; top:-16px; right:-16px; z-index:3; width:46px; height:46px; border-radius:50%; background:#2563EB; border:1px solid rgba(147,197,253,0.4); color:#fff; font-size:19px; cursor:pointer; box-shadow:0 10px 34px rgba(0,0,0,0.55), 0 0 30px rgba(37,99,235,0.4); opacity:{{ lbCtrlOpacity }}; transform:{{ lbCtrlTransform }}; pointer-events:{{ lbCtrlPE }}; transition:opacity 0.3s ease, transform 0.3s ease;">✕</button>
+      <div style="position:relative; aspect-ratio:{{ lb.aspect }}; max-height:84vh; max-width:min(94vw,1080px); border-radius:22px; overflow:hidden; background:#0B0F1A; border:1px solid rgba(37,99,235,0.45); box-shadow:0 36px 100px rgba(0,0,0,0.65), 0 0 80px rgba(37,99,235,0.22); display:flex; align-items:center; justify-content:center;">
+        <!-- placeholder detrás -->
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px; text-align:center;">
+          <sc-if value="{{ lb.isVideo }}" hint-placeholder-val="{{ true }}">
+            <div style="width:88px; height:88px; border-radius:50%; border:1px solid rgba(147,197,253,0.4); display:flex; align-items:center; justify-content:center; background:rgba(37,99,235,0.12);">
+              <div style="width:0; height:0; border-left:25px solid #93C5FD; border-top:16px solid transparent; border-bottom:16px solid transparent; margin-left:7px;"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ lb.isImage }}" hint-placeholder-val="{{ false }}">
+            <div style="width:84px; height:66px; border:2px solid #93C5FD; border-radius:9px; position:relative;"><div style="position:absolute; left:9px; bottom:9px; width:22px; height:22px; border-radius:50%; background:#93C5FD;"></div></div>
+          </sc-if>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#93C5FD; letter-spacing:0.5px;">{{ lb.label }}</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#64748B; letter-spacing:0.5px;">{{ lb.sub }}</div>
+          <div style="font-family:'Inter',sans-serif; font-size:12.5px; color:#475569; max-width:280px; line-height:1.5;">Aún no producido — al colocar el archivo en /media aparece aquí automáticamente.</div>
+        </div>
+        <!-- media real encima (se inyecta sólo si el archivo existe) -->
+        <div id="lb-media-host" style="position:relative; z-index:1; display:flex; align-items:center; justify-content:center; max-width:100%; max-height:84vh;"></div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- CHAT WIDGET -->
+  <sc-if value="{{ chatEnabled }}" hint-placeholder-val="{{ true }}">
+  <div class="bp-private" style="position:fixed; right:24px; bottom:24px; z-index:60; display:flex; flex-direction:column; align-items:flex-end; gap:16px; font-family:'Inter',sans-serif;">
+
+    <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="width:min(380px,calc(100vw - 32px)); height:min(560px,calc(100vh - 130px)); background:rgba(11,15,26,0.92); backdrop-filter:blur(24px); border:1px solid rgba(37,99,235,0.32); border-radius:22px; box-shadow:0 20px 70px rgba(0,0,0,0.6), 0 0 60px rgba(37,99,235,0.18); display:flex; flex-direction:column; overflow:hidden;">
+      <!-- header -->
+      <div style="display:flex; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid rgba(37,99,235,0.2); background:rgba(37,99,235,0.06);">
+        <div style="width:38px; height:38px; flex:none; border-radius:50%; border:1px solid rgba(255,255,255,0.14); background:radial-gradient(circle at 34% 30%, rgba(255,255,255,0.45) 0%, transparent 24%), radial-gradient(circle at 66% 74%, #7C3AED 0%, transparent 52%), radial-gradient(circle at 40% 60%, #2563EB 0%, transparent 60%), radial-gradient(circle at 50% 46%, #1E3A5F 0%, #0A1424 80%); box-shadow:0 0 18px rgba(37,99,235,0.4);"></div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-family:'Montserrat',sans-serif; font-weight:700; font-size:14px; color:#fff; line-height:1.2;">Agente del proyecto</div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:2px;"><span style="width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 6px #22c55e;"></span><span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.5px; color:#22c55e;">EN LÍNEA · BUBBLE PROP</span></div>
+        </div>
+        <button onClick="{{ closeChat }}" aria-label="Cerrar" style="flex:none; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-size:16px; cursor:pointer; line-height:1;">✕</button>
+      </div>
+      <!-- messages -->
+      <div class="bp-scroll" id="bp-chat-scroll" style="flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:12px;">
+        <sc-for list="{{ messages }}" as="m" hint-placeholder-count="2">
+          <div style="max-width:84%; align-self:{{ m.align }}; background:{{ m.bg }}; border:1px solid {{ m.border }}; color:{{ m.color }}; padding:11px 14px; border-radius:{{ m.radius }}; font-size:14px; line-height:1.55; white-space:pre-wrap; word-wrap:break-word;">{{ m.text }}</div>
+        </sc-for>
+        <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+          <div style="align-self:flex-start; background:rgba(37,99,235,0.10); border:1px solid rgba(37,99,235,0.25); padding:13px 16px; border-radius:16px 16px 16px 4px; display:flex; gap:5px;">
+            <span style="width:7px; height:7px; border-radius:50%; background:#93C5FD; animation:blink 1.2s infinite;"></span>
+            <span style="width:7px; height:7px; border-radius:50%; background:#93C5FD; animation:blink 1.2s infinite 0.2s;"></span>
+            <span style="width:7px; height:7px; border-radius:50%; background:#93C5FD; animation:blink 1.2s infinite 0.4s;"></span>
+          </div>
+        </sc-if>
+      </div>
+      <!-- suggestions -->
+      <sc-if value="{{ showSuggestions }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; gap:8px; padding:0 18px 12px; flex-wrap:wrap;">
+          <sc-for list="{{ suggestions }}" as="q" hint-placeholder-count="3">
+            <button onClick="{{ q.send }}" style="font-family:'Inter',sans-serif; font-size:12px; color:#93C5FD; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.3); border-radius:9999px; padding:7px 12px; cursor:pointer; line-height:1.2;">{{ q.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <!-- input -->
+      <div style="display:flex; gap:10px; padding:14px 16px; border-top:1px solid rgba(37,99,235,0.2);">
+        <input id="bp-chat-input" value="{{ input }}" onInput="{{ onInput }}" onKeyDown="{{ onKeyDown }}" placeholder="Escribe tu pregunta…" style="flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid rgba(37,99,235,0.3); border-radius:9999px; padding:11px 16px; color:#E2E8F0; font-family:'Inter',sans-serif; font-size:14px; outline:none;" />
+        <button onClick="{{ sendMessage }}" aria-label="Enviar" style="flex:none; width:42px; height:42px; border-radius:50%; background:#2563EB; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(37,99,235,0.4);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.39 1.2L4.1 11.5l9.9.5-9.9.5-2.09 6.7a1 1 0 0 0 1.39 1.2z"/></svg>
+        </button>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- launcher -->
+    <button onClick="{{ toggleChat }}" aria-label="Abrir chat" style="width:62px; height:62px; border-radius:50%; background:#22a558; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 34px rgba(34,197,88,0.45), 0 0 0 1px rgba(255,255,255,0.08); align-self:flex-end;">
+      <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+        <span style="color:#fff; font-size:22px; line-height:1;">✕</span>
+      </sc-if>
+      <sc-if value="{{ chatClosed }}" hint-placeholder-val="{{ true }}">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23 4.54 0 8.23 3.7 8.23 8.24 0 4.54-3.7 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+      </sc-if>
+    </button>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;sectorLabel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;DISEÑO · CONSTRUCCIÓN · INTERIORISMO&quot;,&quot;GESTIÓN DE OBRA Y PROYECTOS&quot;],&quot;default&quot;:&quot;DISEÑO · CONSTRUCCIÓN · INTERIORISMO&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;chatEnabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;ambientGlow&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:1.5,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;}}">
+const AGENT_CONTEXT = `Eres el agente conversacional de BubbleMesh Prop para el proyecto piloto con Grupo Lazza. Respondes en vivo, dentro de la landing de presentación dirigida a Jaime Lavin. Tu tono es sofisticado, técnico y directo — "ingeniería desde adentro", potencia ordenada. Cálido pero preciso. Respuestas breves (2-4 frases), en español, sin tecnicismos innecesarios. Nunca inventes datos que no estén aquí.
+
+QUÉ ES BUBBLE PROP
+Vertical de BubbleMesh para desarrollo inmobiliario en México (diseño, construcción, interiorismo). Combina Community Managers humanos con agentes de IA para ejecutar marketing, ventas y contenido, sin que el cliente tenga que operar la tecnología. Atrae, posiciona y da seguimiento — el cierre de venta sigue siendo del cliente.
+
+GRUPO LAZZA (cliente piloto, encabezado por el arquitecto Jaime Lavin)
+- LAZZA: diseño/arquitectura. Atrae con visión. Avatar de IA en redes.
+- OAL: construcción. Da confianza con ejecución. Página web por proyecto + contenido con IA.
+- LAMZO: interiorismo. Posiciona la decisión. Avatar de IA en redes.
+Son tres marcas, tres públicos, bajo un mismo dueño — un funnel natural. El dolor central: todo pasa por Jaime; no hay estructura comercial que no dependa de él.
+
+ETAPAS DE UN DESARROLLO: Preventa → En desarrollo → Entrega inmediata. La preventa es la puerta de entrada ideal: no hay nada físico que mostrar, la IA construye la ilusión completa (renders, recorridos) antes de la primera columna.
+
+SERVICIOS / EJEMPLOS EN LA LANDING
+1. Avatar de IA que replica a Jaime (Lazza/Lamzo) — presencia constante sin grabar a diario.
+2. Página web por proyecto (OAL) — cada desarrollo con su propio espacio digital.
+3. Contenido con IA — posts, video y stories con ritmo constante por marca.
+4. Este chat — agente real conectado, no un mockup.
+
+MODELO HÍBRIDO DE FOTOGRAFÍA: captura en sitio (iPhone) + mejora con IA para el día a día (ilimitado, incluido); productoras externas para momentos clave (lanzamiento, entrega) cotizadas aparte por proyecto. Nunca se promete calidad de productora con captura de celular.
+
+PAQUETE PILOTO (mayor nivel de beneficio, a cambio de retroalimentación y uso como caso de estudio): páginas web ilimitadas, brandbook con cambios ilimitados, campañas en Google/Facebook/Instagram/TikTok/X/LinkedIn, avatares ilimitados, chatbot con optimización mensual, 6 publicaciones/semana, Community Manager y Account Manager con prioridad, MVP a la medida cada 3 meses, descuento con productoras aliadas.
+INVERSIÓN PILOTO: $10,134.60 MXN/mes o $121,615.20 MXN/año. (Estándar: $18,000 MXN/mes.)
+La lógica del precio: Grupo Lazza se cobra como tres clientes porque en la práctica lo es — tres identidades con público y contenido propios.
+
+VISIÓN: Grupo Lazza no es solo un cliente, es la alianza estratégica de entrada al sector. El caso de éxito documentado abre puertas con otros despachos y desarrolladoras. La credibilidad se hereda, no se construye desde cero.
+
+Si te preguntan algo fuera de este alcance, responde con honestidad y reconduce hacia lo que sí sabes del proyecto. Para cerrar o agendar, invita a hablar directamente con el equipo de Bubble Prop.`;
+
+const WELCOME = "Hola 👋 Soy el agente del proyecto Bubble Prop para Grupo Lazza. Pregúntame sobre el servicio, el paquete piloto, los avatares de IA, o cómo funciona el funnel de las tres marcas.";
+
+const SUGGESTIONS = [
+  "¿Qué incluye el paquete piloto?",
+  "¿Cómo funciona el avatar de IA?",
+  "¿Por qué tres marcas en un cliente?"
+];
+
+const MEDIA = {
+  avatar:  { label: 'jaime-avatar-demo.mp4', sub: 'VIDEO 9:16 · Avatar de IA de Jaime',     src: 'media/avatar/jaime-avatar-demo.mp4',            type: 'video', aspect: '9 / 16' },
+  web:     { label: 'oal-proyecto-demo.png',  sub: 'Landing de proyecto OAL · scroll largo', src: 'media/web-proyecto/oal-proyecto-demo.png',       type: 'image', aspect: '16 / 11' },
+  post:    { label: 'lazza-post-01',          sub: 'POST 4:5 · boceto → render',             src: 'media/contenido/lazza-post-01.webp',            type: 'image', aspect: '4 / 5' },
+  vid:     { label: 'oal-carrusel-01',        sub: 'CARRUSEL · avance de obra',              src: 'media/contenido/oal-video-01.webp',             type: 'image', aspect: '4 / 3' },
+  story:   { label: 'lamzo-story-01',         sub: 'STORY 9:16 · vacío → amueblado',         src: 'media/contenido/lamzo-story-01.mp4',            type: 'video', aspect: '9 / 16' },
+  antes:   { label: 'oal-foto-antes.jpg',     sub: 'Antes · captura iPhone en sitio',        src: 'media/fotografia-hibrida/oal-foto-antes.jpg',   type: 'image', aspect: '4 / 3' },
+  despues: { label: 'oal-foto-despues.jpg',   sub: 'Después · mejora con IA',                src: 'media/fotografia-hibrida/oal-foto-despues.jpg', type: 'image', aspect: '4 / 3' }
+};
+
+function bubbleStyle(role) {
+  if (role === 'user') {
+    return { align: 'flex-end', bg: '#2563EB', border: 'rgba(147,197,253,0.3)', color: '#ffffff', radius: '16px 16px 4px 16px' };
+  }
+  return { align: 'flex-start', bg: 'rgba(37,99,235,0.10)', border: 'rgba(37,99,235,0.25)', color: '#E2E8F0', radius: '16px 16px 16px 4px' };
+}
+
+class Component extends DCLogic {
+  state = {
+    chatOpen: false,
+    input: '',
+    loading: false,
+    flippedM: false,
+    flippedA: false,
+    lightbox: null,
+    lbClosing: false,
+    lbControls: false,
+    lazza: false,
+    raw: [{ role: 'assistant', text: WELCOME }]
+  };
+
+  // Cambia la identidad visual del sitio a Grupo Lazza (y de vuelta) al clic en el orbe.
+  toggleTheme = () => this.setState(s => {
+    const next = !s.lazza;
+    try { document.body.style.background = next ? '#5C4F47' : '#0A1424'; } catch (_) {}
+    return { lazza: next };
+  });
+
+  // Modo público: true en GitHub Pages (github.io / dominio); false en local.
+  isPublic = () => {
+    try {
+      const h = location.hostname;
+      return !(h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '');
+    } catch (_) { return false; }
+  };
+
+  toggleM = () => this.setState(s => ({ flippedM: !s.flippedM }));
+  toggleA = () => this.setState(s => ({ flippedA: !s.flippedA }));
+
+  openMedia(item) {
+    this.setState({ lightbox: item, lbClosing: false });
+    this.showControls();
+    setTimeout(() => {
+      const host = document.getElementById('lb-media-host');
+      if (!host) return;
+      host.innerHTML = '';
+      // Sólo inyecta el archivo real si existe — evita errores de recurso 404 para media aún no producida.
+      fetch(item.src, { method: 'HEAD' }).then((res) => {
+        if (!res.ok) return;
+        if (!this.state.lightbox || this.state.lightbox.src !== item.src) return;
+        let el;
+        if (item.type === 'image') {
+          el = document.createElement('img');
+          el.src = item.src; el.alt = item.label;
+          el.style.cssText = 'position:relative;z-index:1;max-width:100%;max-height:84vh;object-fit:contain;display:block;';
+        } else {
+          el = document.createElement('video');
+          // Audio apagado por defecto al publicar — el video se reproduce en mute (autoplay silencioso).
+          el.src = item.src; el.controls = true; el.autoplay = true; el.playsInline = true; el.muted = true;
+          el.style.cssText = 'position:relative;z-index:1;max-width:100%;max-height:84vh;display:block;';
+        }
+        host.appendChild(el);
+      }).catch(() => {});
+    }, 40);
+  }
+  closeMedia = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (this.state.lbClosing || !this.state.lightbox) return;
+    clearTimeout(this._ctrlTimer);
+    this.setState({ lbClosing: true, lbControls: false });
+    setTimeout(() => this.setState({ lightbox: null, lbClosing: false }), 280);
+  };
+
+  showControls = () => {
+    if (!this.state.lbControls) this.setState({ lbControls: true });
+    clearTimeout(this._ctrlTimer);
+    this._ctrlTimer = setTimeout(() => {
+      if (this.state.lightbox) this.setState({ lbControls: false });
+    }, 2200);
+  };
+  onDocMove = () => { if (this.state.lightbox && !this.state.lbClosing) this.showControls(); };
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+  onMediaError = (e) => { try { e.target.style.display = 'none'; } catch (_) {} };
+
+  openAvatar  = () => this.openMedia(MEDIA.avatar);
+  openWeb     = () => this.openMedia(MEDIA.web);
+  // Abre el sitio real del proyecto (Lazza Arquitectos) en una pestaña nueva.
+  openProyecto = () => { try { window.open('https://oscarfca.github.io/lazza-arquitectos/', '_blank', 'noopener'); } catch (_) {} };
+  // Abre el prototipo del ERP de Grupo Lazza en una pestaña nueva.
+  openPrototipo = () => { try { window.open('https://oscarfca.github.io/sistema-lazza/', '_blank', 'noopener'); } catch (_) {} };
+  openPost    = () => this.openMedia(MEDIA.post);
+  openVid     = () => this.openMedia(MEDIA.vid);
+  openStory   = () => this.openMedia(MEDIA.story);
+  openAntes   = () => this.openMedia(MEDIA.antes);
+  openDespues = () => this.openMedia(MEDIA.despues);
+
+  onKeyDownDoc = (e) => { if (e.key === 'Escape') this.closeMedia(); };
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDownDoc);
+    document.addEventListener('mousemove', this.onDocMove);
+    document.addEventListener('touchstart', this.onDocMove);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDownDoc);
+    document.removeEventListener('mousemove', this.onDocMove);
+    document.removeEventListener('touchstart', this.onDocMove);
+    clearTimeout(this._ctrlTimer);
+  }
+
+  scrollDown() {
+    requestAnimationFrame(() => {
+      const el = document.getElementById('bp-chat-scroll');
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }
+
+  openChat = () => {
+    this.setState({ chatOpen: true });
+    this.scrollDown();
+  };
+  closeChat = () => this.setState({ chatOpen: false });
+  toggleChat = () => {
+    const open = !this.state.chatOpen;
+    this.setState({ chatOpen: open });
+    if (open) this.scrollDown();
+  };
+
+  onInput = (e) => this.setState({ input: e.target.value });
+  onKeyDown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); } };
+
+  async send(forced) {
+    const text = (forced != null ? forced : this.state.input).trim();
+    if (!text || this.state.loading) return;
+    const raw = this.state.raw.concat([{ role: 'user', text }]);
+    this.setState({ raw, input: '', loading: true });
+    this.scrollDown();
+
+    try {
+      // Turnos de la conversación — el contexto del agente va en el parámetro system.
+      const turns = raw.map(m => ({ role: m.role, content: m.text }));
+      const cfg = window.BUBBLE_PROP_CONFIG || {};
+      const apiKey = cfg.ANTHROPIC_API_KEY;
+      const model = cfg.MODEL || 'claude-haiku-4-5';
+
+      let reply;
+      if (apiKey) {
+        // Llamada directa a la API de Claude desde el navegador (presentación local controlada).
+        // El header anthropic-dangerous-direct-browser-access habilita CORS para el navegador.
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({ model, max_tokens: 1024, system: AGENT_CONTEXT, messages: turns })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const data = await res.json();
+        reply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+      } else if (window.claude && window.claude.complete) {
+        // Respaldo: puente de claude.ai (al abrir la landing dentro de claude.ai).
+        const apiMessages = [
+          { role: 'user', content: AGENT_CONTEXT },
+          { role: 'assistant', content: 'Entendido. Soy el agente del proyecto Bubble Prop para Grupo Lazza. ¿En qué puedo ayudarte?' }
+        ].concat(turns);
+        reply = await window.claude.complete({ messages: apiMessages });
+      } else {
+        reply = "El agente está disponible al abrir la landing en su entorno de presentación. (Falta config.js con la API key, o ábrela dentro de claude.ai.)";
+      }
+      this.setState({ raw: this.state.raw.concat([{ role: 'assistant', text: (reply || '').trim() || 'Disculpa, no recibí respuesta. ¿Puedes reformular tu pregunta?' }]), loading: false });
+    } catch (err) {
+      this.setState({ raw: this.state.raw.concat([{ role: 'assistant', text: 'Hubo un problema al conectar con el modelo. Inténtalo de nuevo en un momento.' }]), loading: false });
+    }
+    this.scrollDown();
+  }
+
+  sendMessage = () => this.send();
+
+  renderVals() {
+    const messages = this.state.raw.map(m => Object.assign({ text: m.text }, bubbleStyle(m.role)));
+    const suggestions = SUGGESTIONS.map(label => ({ label, send: () => this.send(label) }));
+    return {
+      rootClass: 'bp-root' + (this.state.lazza ? ' theme-lazza' : '') + (this.isPublic() ? ' public-mode' : ''),
+      toggleTheme: this.toggleTheme,
+      sectorLabel: this.props.sectorLabel ?? 'DISEÑO · CONSTRUCCIÓN · INTERIORISMO',
+      chatEnabled: this.props.chatEnabled ?? true,
+      ambientGlow: this.props.ambientGlow ?? 1,
+      chatOpen: this.state.chatOpen,
+      chatClosed: !this.state.chatOpen,
+      mFlip: this.state.flippedM ? 'rotateY(180deg)' : 'rotateY(0deg)',
+      aFlip: this.state.flippedA ? 'rotateY(180deg)' : 'rotateY(0deg)',
+      toggleM: this.toggleM,
+      toggleA: this.toggleA,
+      showTotal: this.state.flippedM && this.state.flippedA,
+      lbOpen: !!this.state.lightbox,
+      lb: Object.assign(
+        { label: '', sub: '', src: '', aspect: '1 / 1', isImage: false, isVideo: false },
+        this.state.lightbox || {},
+        this.state.lightbox ? { isImage: this.state.lightbox.type === 'image', isVideo: this.state.lightbox.type === 'video' } : {}
+      ),
+      lbCtrlOpacity: this.state.lbControls ? '1' : '0',
+      lbCtrlPE: this.state.lbControls ? 'auto' : 'none',
+      lbCtrlTransform: this.state.lbControls ? 'scale(1)' : 'scale(0.7)',
+      lbBackAnim: this.state.lbClosing ? 'lbBackOut 0.27s ease forwards' : 'lbBackIn 0.3s ease',
+      lbContentAnim: this.state.lbClosing ? 'lbPopOut 0.27s cubic-bezier(.4,.2,.4,1) forwards' : 'lbPop 0.44s cubic-bezier(.2,.85,.3,1)',
+      openAvatar: this.openAvatar,
+      openWeb: this.openWeb,
+      openProyecto: this.openProyecto,
+      openPrototipo: this.openPrototipo,
+      openPost: this.openPost,
+      openVid: this.openVid,
+      openStory: this.openStory,
+      openAntes: this.openAntes,
+      openDespues: this.openDespues,
+      closeMedia: this.closeMedia,
+      stop: this.stop,
+      input: this.state.input,
+      loading: this.state.loading,
+      messages,
+      suggestions,
+      showSuggestions: this.state.raw.length <= 1 && !this.state.loading,
+      pkgRows: [
+        { s: 'Página web', p: 'Ilimitadas', e: '1' },
+        { s: 'Brandbook IA + Design.md', p: 'Cambios ilimitados', e: '1' },
+        { s: 'Gestión de campañas de marketing', p: 'Google, Facebook, Instagram, TikTok, X, LinkedIn', e: 'Google + 1 plataforma' },
+        { s: 'Estrategia de marketing digital', p: 'Mensual', e: 'Mensual' },
+        { s: 'Creación de Avatar de IA', p: 'Ilimitados', e: '1' },
+        { s: 'Chatbot IA', p: 'Implementación + optimización mensual', e: 'Optimización trimestral (solo plan anual)' },
+        { s: 'Paquete de contenido', p: '6 publicaciones/semana (2 posts, 2 videos, 2 stories)', e: '3 publicaciones/semana (1 post, 1 video, 1 story)' },
+        { s: 'Community Manager', p: '1 con prioridad', e: '1' },
+        { s: 'Account Manager', p: '1 con prioridad', e: '1' },
+        { s: 'Plataforma a la medida con IA (MVP)', p: '1 cada 3 meses', e: 'No incluido' },
+        { s: 'Descuento con productoras aliadas', p: 'Incluido', e: 'No incluido' }
+      ],
+      openChat: this.openChat,
+      closeChat: this.closeChat,
+      toggleChat: this.toggleChat,
+      onInput: this.onInput,
+      onKeyDown: this.onKeyDown,
+      sendMessage: this.sendMessage
+    };
+  }
+}
+</script>
+</body>
+</html>
